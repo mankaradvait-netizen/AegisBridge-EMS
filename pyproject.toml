@@ -1,0 +1,15 @@
+[tool.pyright]
+typeCheckingMode = "standard"
+include = ["src", "tests"]
+extraPaths = [
+    "C:/Users/HP/AppData/Roaming/Python/Python314/site-packages",
+    "src"
+]
+reportMissingImports = true
+reportMissingTypeStubs = false
+
+
+
+[tool.flake8]
+max-line-length = 120
+extend-ignore = ["E203", "E501", "W503"]
