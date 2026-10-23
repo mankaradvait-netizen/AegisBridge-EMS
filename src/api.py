@@ -22,9 +22,12 @@ from src.domain.models import TriageUrgencyEnum
 
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
-LEDGER_PATH = Path(
-    os.environ.get("AEGIS_AUDIT_LEDGER_PATH", str(BASE_DIR.parent / "audit_trail.jsonl"))
+default_ledger = (
+    "/tmp/audit_trail.jsonl"
+    if os.environ.get("VERCEL")
+    else str(BASE_DIR.parent / "audit_trail.jsonl")
 )
+LEDGER_PATH = Path(os.environ.get("AEGIS_AUDIT_LEDGER_PATH", default_ledger))
 HMAC_SECRET = os.environ.get(
     "AEGIS_HMAC_SECRET", "AegisBridgeProductionSecret2026DefaultKey"
 ).encode("utf-8")

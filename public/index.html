@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AegisBridge-EMS | Pre-Hospital NG911 & Trauma Center Multimodal Bridge</title>
+  <meta name="description" content="Zero-friction pre-hospital Golden-Hour multimodal bridge translating chaotic field inputs into ANSI/NENA-STA-021.1b EIDO JSON and HL7 FHIR R4 Transaction Bundles.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#78716C">
+</head>
+<body>
+
+  <!-- Screen Reader Live Announcement Region (WCAG 2.1 AAA) -->
+  <div id="srAnnounce" class="sr-only" aria-live="assertive" role="status" style="position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;"></div>
+
+  <!-- Header -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <div class="brand-meta">
+        <h1 class="brand-title">AegisBridge-EMS</h1>
+        <span class="brand-badge">Pre-Hospital NG911 Interoperability</span>
+      </div>
+      <div class="header-actions">
+        <!-- Online/Offline Connection Status -->
+        <span id="networkStatus" class="status-chip status-success" title="ESInet / PSBN Connectivity">
+          <span style="display:inline-block;width:8px;height:8px;border-radius:9999px;background:#65A30D;"></span>
+          <span id="networkStatusText">ESInet Online</span>
+        </span>
+        <!-- Disaster Mode Toggle (High-Contrast 7:1 AAA) -->
+        <button id="toggleDisasterMode" class="btn btn-secondary btn-sm" aria-pressed="false" title="Switch to High-Contrast Disaster Mode (WCAG AAA >= 7:1)">
+          Disaster Mode
+        </button>
+        <!-- Gloved Touch Target Toggle -->
+        <button id="toggleGlovedMode" class="btn btn-secondary btn-sm" aria-pressed="false" title="Increase Touch Targets to 56x56px for Responders in Heavy Protective Gloves">
+          Glove Touch
+        </button>
+        <!-- Engine Status Badge (Zero-Trust Security, No Frontend API Key Input) -->
+        <span id="engineStatusBadge" class="status-chip status-neutral" title="Server Backend Operational Mode">
+          <span id="engineStatusText">Clinical Core Active</span>
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container" role="main" style="padding-top: var(--space-48); padding-bottom: var(--space-72);">
+
+    <!-- Overview Banner -->
+    <section class="measure-readable" style="margin-bottom: var(--space-48);">
+      <p class="text-overline">Pre-Hospital Golden-Hour Bridge</p>
+      <h2 class="text-headline" style="margin: 8px 0 16px;">Taming Multimodal Chaos Into Deterministic Life-Safety Actions</h2>
+      <p class="text-body" style="color: var(--color-text-secondary);">
+        AegisBridge-EMS bridges panicked voice streams, degraded trauma scene photos, and crumpled medical records with ANSI-accredited NENA-STA-021.1b EIDO JSON CAD dispatch and HL7 FHIR R4 hospital trauma pre-activation. Powered by a single-pass Gemini multimodal engine and an airtight deterministic ESI v4 decision tree.
+      </p>
+    </section>
+
+    <!-- Clinical Presets Section -->
+    <section style="margin-bottom: var(--space-36);" aria-labelledby="presetsHeading">
+      <h3 id="presetsHeading" class="text-subhead" style="margin-bottom: var(--space-12);">Clinical Presets & Field Scenarios</h3>
+      <p class="text-caption" style="margin-bottom: var(--space-12);">Select a validated pre-hospital emergency scenario to populate the multimodal intake buffer:</p>
+      <div id="presetsGrid" class="presets-grid" role="region" aria-label="Clinical Presets">
+        <!-- Dynamically populated via JS -->
+      </div>
+    </section>
+
+    <!-- Two Column Split View: Intake Console & Neuro-Symbolic Results -->
+    <div class="split-view">
+
+      <!-- Left Column: Multimodal Intake Console -->
+      <section class="card" aria-labelledby="intakeHeading">
+        <h3 id="intakeHeading" class="text-subhead" style="margin-bottom: var(--space-24);">1. Multimodal Field Intake</h3>
+
+        <!-- Acoustic Stream Ingestion -->
+        <div class="form-group">
+          <label class="form-label" for="voiceRecorder">Acoustic Audio Stream (Voice Memo / 911 Dispatch)</label>
+          <div style="display:flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
+            <button id="btnRecordMic" type="button" class="btn btn-secondary btn-sm" aria-label="Record Voice Memo">
+              <span id="micStatusDot" style="display:inline-block;width:8px;height:8px;border-radius:9999px;background:#78716C;"></span>
+              <span id="btnRecordMicText">Record Mic</span>
+            </button>
+            <button id="btnPlaySampleAudio" type="button" class="btn btn-secondary btn-sm" aria-label="Simulate 911 Sirens Audio">
+              Simulate 911 Siren Audio
+            </button>
+            <input type="file" id="audioFileInput" accept="audio/*" style="display:none;">
+            <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('audioFileInput').click();">
+              Upload Audio File
+            </button>
+          </div>
+          <!-- Live Audio Waveform Canvas -->
+          <canvas id="waveformCanvas" class="waveform-canvas" width="400" height="60" aria-label="Audio Waveform Display"></canvas>
+          <p id="audioStatusLabel" class="form-helper">Ready. Captures background respiratory distress, stridor, and sirens.</p>
+        </div>
+
+        <!-- Visual & Document Evidence Ingestion -->
+        <div class="form-group">
+          <label class="form-label" for="imageFileInput">Visual & Document Evidence (Trauma Site / Medication Bottle)</label>
+          <div style="display:flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
+            <input type="file" id="imageFileInput" accept="image/*" style="display:none;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('imageFileInput').click();">
+              Select Photo
+            </button>
+            <button id="btnSimulateGlare" type="button" class="btn btn-ghost btn-sm" title="Apply synthetic specular glare and blur to test optical resilience">
+              Filter: Glare & Blur
+            </button>
+            <button id="btnSimulatePromptInjection" type="button" class="btn btn-ghost btn-sm" title="Overlay typographic prompt injection into image">
+              Overlay: Adversarial Tag
+            </button>
+          </div>
+          <div id="imagePreviewContainer" style="display:none; margin: 8px 0; border: 1px solid var(--color-border-medium); background: var(--color-surface); text-align: center; max-height: 180px; overflow: hidden;">
+            <img id="imagePreview" src="" alt="Field evidence preview" style="max-height: 180px; width: auto; object-fit: contain;">
+          </div>
+          <p id="imageStatusLabel" class="form-helper">Evaluates mechanism of injury, severe burns, or pill bottle labels.</p>
+        </div>
+
+        <!-- Unstructured Field Notes & PII Redaction Vault -->
+        <div class="form-group">
+          <div style="display:flex; justify-content: space-between; align-items: baseline;">
+            <label class="form-label" for="fieldNotes">Paramedic Field Notes / Transcript</label>
+            <span id="piiCounter" class="text-caption" style="color:var(--color-primary); font-weight:600;">Reversible PII Vault Active</span>
+          </div>
+          <textarea id="fieldNotes" rows="5" placeholder="Enter clinical observations, stated symptoms, and vital signs..."></textarea>
+          <p class="form-helper">Automatically tokenizes and encrypts sensitive identifiers (MRN, SSN, Names) via AES vault before inference.</p>
+        </div>
+
+        <!-- Environmental & Telemetry Feeds -->
+        <div class="form-group">
+          <label class="form-label">Live Scene Telemetry & Environmental Stream</label>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+            <div>
+              <span class="text-caption">WGS84 Latitude</span>
+              <input type="number" id="gpsLat" step="0.000001" value="40.440624">
+            </div>
+            <div>
+              <span class="text-caption">WGS84 Longitude</span>
+              <input type="number" id="gpsLng" step="0.000001" value="-79.995888">
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <input type="text" id="weatherAlert" placeholder="Live Weather Alert" value="Heavy freezing rain (32°F, visibility 1.2mi)">
+            <input type="text" id="trafficCondition" placeholder="Traffic Feeds" value="I-376 Eastbound lane closure, 18-minute delay">
+          </div>
+        </div>
+
+        <!-- Process Button -->
+        <div style="margin-top: var(--space-24);">
+          <button id="btnProcessIntake" type="button" class="btn btn-primary btn-lg" style="width:100%;">
+            <span id="btnProcessSpinner" style="display:none;">⏳</span>
+            Analyze Multimodal Field Bundle
+          </button>
+        </div>
+
+      </section>
+
+      <!-- Right Column: Neuro-Symbolic Results & Protocol Inspector -->
+      <section class="card-elevated" aria-labelledby="resultsHeading">
+        <h3 id="resultsHeading" class="text-subhead" style="margin-bottom: var(--space-24);">2. Neuro-Symbolic Execution Core</h3>
+
+        <!-- Initial Placeholder State -->
+        <div id="resultsEmptyState" style="text-align: center; padding: var(--space-48) var(--space-12);">
+          <p class="text-subhead" style="color: var(--color-text-secondary); margin-bottom: 8px;">Awaiting Field Transmission</p>
+          <p class="text-caption">Choose a clinical preset or submit the intake form to execute single-pass multimodal triage.</p>
+        </div>
+
+        <!-- Populated Results Container -->
+        <div id="resultsContent" style="display:none;">
+
+          <!-- HITL Gate Banner (ESI 1 & 2) -->
+          <div id="hitlGateBanner" class="hitl-banner" style="display:none;" role="alert">
+            <div style="display:flex; justify-content: space-between; align-items: center;">
+              <div>
+                <span class="text-overline" style="color:var(--color-error);">Human-In-The-Loop Confirmation Gate (OWASP LLM06)</span>
+                <p style="font-weight:700; font-size:16px; color:var(--color-error);">Immediate Dispatcher Verification Required</p>
+              </div>
+              <span id="hitlCountdownTimer" style="font-family:var(--font-mono); font-size:22px; font-weight:700; color:var(--color-error);">10s</span>
+            </div>
+            <div class="hitl-countdown-track">
+              <div id="hitlProgress" class="hitl-countdown-progress"></div>
+            </div>
+            <p class="text-caption" style="margin-bottom: var(--space-12);">
+              To prevent autonomous high-risk physical ambulance dispatch, confirm dispatch or select a manual override within 10 seconds.
+            </p>
+            <div style="display:flex; gap: 8px; flex-wrap: wrap;">
+              <button id="btnHitlApprove" type="button" class="btn btn-destructive btn-sm">
+                Confirm & Dispatch Now
+              </button>
+              <button id="btnHitlOverride" type="button" class="btn btn-secondary btn-sm">
+                Override Priority
+              </button>
+            </div>
+          </div>
+
+          <!-- Triage Assessment Card -->
+          <div style="border-bottom: 1px solid var(--color-border-subtle); padding-bottom: var(--space-24); margin-bottom: var(--space-24);">
+            <div style="display:flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+              <span id="triageEsiBadge" class="esi-badge esi-level-2">ESI 2: EMERGENT</span>
+              <span id="modelTierBadge" class="status-chip status-neutral">Tier 1: Flash</span>
+            </div>
+            <p id="triageRationale" class="text-body" style="font-weight: 500; margin-bottom: 8px;"></p>
+            <p id="evidenceSummary" class="text-caption"></p>
+          </div>
+
+          <!-- Extracted Physiological Vitals Grid -->
+          <div style="margin-bottom: var(--space-24);">
+            <p class="text-overline">Validated Physiological Vitals (LOINC Coded)</p>
+            <div class="vitals-grid">
+              <div id="vitalHr" class="vital-tile">
+                <div class="vital-label">Heart Rate (8867-4)</div>
+                <div id="vitalHrVal" class="vital-value">--</div>
+                <div class="text-caption">beats/min</div>
+              </div>
+              <div id="vitalBp" class="vital-tile">
+                <div class="vital-label">Blood Pressure (8480-6)</div>
+                <div id="vitalBpVal" class="vital-value">-- / --</div>
+                <div class="text-caption">mmHg</div>
+              </div>
+              <div id="vitalSpo2" class="vital-tile">
+                <div class="vital-label">SpO2 (2708-6)</div>
+                <div id="vitalSpo2Val" class="vital-value">--%</div>
+                <div class="text-caption">pulse oximetry</div>
+              </div>
+              <div id="vitalRr" class="vital-tile">
+                <div class="vital-label">Resp Rate (9279-1)</div>
+                <div id="vitalRrVal" class="vital-value">--</div>
+                <div class="text-caption">breaths/min</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Clinical Entities & Hazards -->
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: var(--space-12); margin-bottom: var(--space-24);">
+            <div class="vital-tile" style="text-align: left;">
+              <div class="vital-label">Identified Medications (RxNorm)</div>
+              <div id="medicationsList" style="font-size: 13px; margin-top: 6px;">None identified</div>
+            </div>
+            <div class="vital-tile" style="text-align: left;">
+              <div class="vital-label">Scene & Environmental Hazards</div>
+              <div id="hazardsList" style="font-size: 13px; margin-top: 6px;">No structural hazards</div>
+            </div>
+          </div>
+
+          <!-- Downstream Protocol Inspector Tabs -->
+          <div>
+            <div class="tabs-header" role="tablist">
+              <button class="tab-btn active" role="tab" aria-selected="true" data-tab="tabEido">
+                NENA-STA-021.1b EIDO JSON
+              </button>
+              <button class="tab-btn" role="tab" aria-selected="false" data-tab="tabFhir">
+                HL7 FHIR R4 Bundle
+              </button>
+              <button class="tab-btn" role="tab" aria-selected="false" data-tab="tabAudit">
+                HMAC-SHA256 Audit Trail
+              </button>
+            </div>
+
+            <!-- EIDO Tab -->
+            <div id="tabEido" class="tab-content active" role="tabpanel">
+              <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span class="status-chip status-success">ANSI Accredited EIDO 1.1b</span>
+                <button id="btnCopyEido" type="button" class="btn btn-ghost btn-sm">Copy EIDO</button>
+              </div>
+              <div id="eidoOutput" class="code-box"></div>
+            </div>
+
+            <!-- FHIR Tab -->
+            <div id="tabFhir" class="tab-content" role="tabpanel">
+              <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span class="status-chip status-success">HL7 FHIR R4 (IHE mPSC Profile)</span>
+                <button id="btnCopyFhir" type="button" class="btn btn-ghost btn-sm">Copy FHIR</button>
+              </div>
+              <div id="fhirOutput" class="code-box"></div>
+            </div>
+
+            <!-- Audit Trail Tab -->
+            <div id="tabAudit" class="tab-content" role="tabpanel">
+              <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span id="auditChainStatus" class="status-chip status-success">RFC 2104 Hash-Chain Valid</span>
+                <button id="btnVerifyAudit" type="button" class="btn btn-ghost btn-sm">Verify Chain</button>
+              </div>
+              <div id="auditOutput" class="code-box"></div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container" style="display:flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+      <p class="text-caption">
+        ThoughtStream Design Architecture &copy; 2026 AegisBridge-EMS. Zero-Trust Pre-Hospital Interoperability.
+      </p>
+      <div style="display:flex; gap: 16px;">
+        <span class="text-caption">NENA-STA-021.1b EIDO</span>
+        <span class="text-caption">HL7 FHIR R4 NEMSIS v3.5.0</span>
+        <span class="text-caption">RFC 2104 HMAC-SHA256</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
